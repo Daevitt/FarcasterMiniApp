@@ -42,4 +42,6 @@ export default function UserProfile() {
   );
 }
 
-
+export default function UserProfile() {
+  // ... contenido del componente  
+}
