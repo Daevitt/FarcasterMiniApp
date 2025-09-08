@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "name": "Brander+",
+  "description": "We are the future of engagement on web3, taking advantage of the power in live streams.",
+  "tagline": "Real Engagement",
+  "subtitle": "Generate engagement with BranderGG",
+  "primaryCategory": "social",
+  "icon": "https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/200x200.png",
+  "url": "https://farcaster-branderplus-mini-app.vercel.app",
+  "actions": [
+    {
+      "name": "Open App",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app"
+    },
+    {
+      "name": "Dashboard",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app/dashboard"
+    },
+    {
+      "name": "Create List",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app/create"
+    }
+  ],
+  "splash": {
+    "imageUrl": "https://farcaster-branderplus-mini-app.vercel.app/splash.png",
+    "backgroundColor": "#089bff"
+  },
+  "screenshots": [
+    "https://www.brander.gg/_app/immutable/assets/promo-popups.a7bd6be9.avif",
+    "https://www.brander.gg/_app/immutable/assets/millennials.c1784071.avif"
+  ],
+  "heroImageUrl": "https://www.brander.gg/_app/immutable/assets/millennials.c1784071.avif",
+  "tags": ["social", "tool", "engagement", "stream", "web3"],
+  "webhookUrl": "https://farcaster-branderplus-mini-app.vercel.app/api/webhook"
+}
