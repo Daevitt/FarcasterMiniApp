@@ -13,3 +13,6 @@ export default function Providers({ children }: ProvidersProps) {
     </div>
   )
 }
+
+// Named export también
+export { Providers }
