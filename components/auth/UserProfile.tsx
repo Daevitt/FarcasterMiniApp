@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore } from '../lib/store';
 
 export default function UserProfile() {
   const { user, logout } = useAuthStore();
@@ -41,3 +41,4 @@ export default function UserProfile() {
     </div>
   );
 }
+
