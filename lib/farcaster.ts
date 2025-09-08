@@ -12,9 +12,16 @@ export interface SignInResult {
   }
 }
 
+type SignInResponse = {
+  fid: number
+  username: string
+  displayName: string
+  pfpUrl: string
+}
+
 export async function signInWithFarcaster(): Promise<SignInResult> {
   try {
-    // 1. Revisar si ya hay contexto (usuario logeado)
+    // 1. Revisar si ya hay contexto
     const context = await sdk.context
     if (context?.user) {
       return {
@@ -28,9 +35,9 @@ export async function signInWithFarcaster(): Promise<SignInResult> {
       }
     }
 
-    // 2. Si no hay usuario → forzar signIn con nonce obligatorio
+    // 2. Forzar signIn
     const nonce = crypto.randomUUID()
-    const result = await sdk.actions.signIn({ nonce })
+    const result = await sdk.actions.signIn({ nonce }) as SignInResponse
 
     if (result?.fid) {
       return {
