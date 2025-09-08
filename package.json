@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@farcaster/miniapp-sdk": "^0.1.0",
-    "@farcaster/miniapp-wagmi-connector": "^0.1.0",
+    "@farcaster/miniapp-wagmi-connector": "^1.0.0",
     "zustand": "^4.4.7",
     "wagmi": "^2.5.0",
     "viem": "^2.7.16",
@@ -29,3 +29,4 @@
     "typescript": "^5"
   }
 }
+
