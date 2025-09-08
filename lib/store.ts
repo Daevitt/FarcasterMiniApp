@@ -1,25 +1,11 @@
 'use client'
 import { create } from 'zustand'
-
-interface User {
-  fid: number;
-  username: string;
-  displayName: string;
-  pfpUrl: string;
-}
-
-interface TaskList {
-  id: string;
-  title: string;
-  description: string;
-  taskCount: number;
-  createdAt: Date;
-}
+import { User, TaskList } from './types'
 
 interface AuthState {
   user: User | null;
   isLoading: boolean;
-  isAuthenticated: boolean; // ← Añadir esta línea
+  isAuthenticated: boolean;
   login: (userData: User) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
@@ -31,17 +17,17 @@ interface TaskState {
   removeTaskList: (id: string) => void;
 }
 
-// Auth Store
+// 🔹 Auth Store
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: false,
-  isAuthenticated: false, // ← Añadir esta línea
-  login: (userData: User) => set({ user: userData, isAuthenticated: true }), // ← Actualizar
-  logout: () => set({ user: null, isAuthenticated: false }), // ← Actualizar
+  isAuthenticated: false,
+  login: (userData: User) => set({ user: userData, isAuthenticated: true }),
+  logout: () => set({ user: null, isAuthenticated: false }),
   setLoading: (loading: boolean) => set({ isLoading: loading }),
 }));
 
-// Task Store
+// 🔹 Task Store
 export const useTaskStore = create<TaskState>((set, get) => ({
   taskLists: [],
   addTaskList: (list) => {
@@ -52,9 +38,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     };
     set({ taskLists: [...get().taskLists, newList] });
   },
-  removeTaskList: (id) => 
+  removeTaskList: (id) =>
     set({ taskLists: get().taskLists.filter(list => list.id !== id) }),
 }));
 
-// Alias para compatibilidad
+// 🔹 Alias para compatibilidad
 export const useAppStore = useAuthStore;
