@@ -10,7 +10,7 @@ import { markAppAsReady } from '../lib/farcaster'
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthStore()
-  const { taskLists } = useAppStore()
+  const { taskLists } = useTaskStore()
   const [isLoading, setIsLoading] = useState(true)
 
   // Marcar la app como lista cuando se carga
@@ -142,4 +142,5 @@ export default function HomePage() {
   )
 
 }
+
 
