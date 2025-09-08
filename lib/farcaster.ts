@@ -19,12 +19,23 @@ export interface SignInResult {
 // Función helper para hacer sign in
 export async function signInWithFarcaster(): Promise<SignInResult> {
   try {
-    const result = await sdk.actions.signIn({
-      nonce: generateNonce(),
-      acceptAuthAddress: true
-    })
+    // Obtener contexto del usuario si ya está autenticado
+    if (sdk.context?.user) {
+      return {
+        isAuthenticated: true,
+        user: {
+          fid: sdk.context.user.fid,
+          username: sdk.context.user.username,
+          displayName: sdk.context.user.displayName,
+          pfpUrl: sdk.context.user.pfpUrl
+        }
+      }
+    }
 
-    if (result.success) {
+    // Si no está autenticado, solicitar sign in
+    const result = await sdk.actions.signIn()
+
+    if (result && result.fid) {
       return {
         isAuthenticated: true,
         user: {
@@ -47,11 +58,6 @@ export async function signInWithFarcaster(): Promise<SignInResult> {
       error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
-}
-
-// Generar nonce único para sign in
-function generateNonce(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 }
 
 // Función para marcar la app como lista
