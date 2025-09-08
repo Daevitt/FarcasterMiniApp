@@ -41,7 +41,3 @@ export default function UserProfile() {
     </div>
   );
 }
-
-export default function UserProfile() {
-  // ... contenido del componente  
-}
