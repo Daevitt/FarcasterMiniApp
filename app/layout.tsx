@@ -11,15 +11,15 @@ export const metadata: Metadata = {
   other: {
     'fc:miniapp': JSON.stringify({
       version: "1",
-      imageUrl: "https://your-domain.com/og-image.png", // Cambiar por tu dominio
+      imageUrl: "https://github.com/Daevitt/FarcasterMiniApp/blob/37a795a6f2d6392279883ad0147fe71b7a0e96d8/logos/600x400-alpha.png", // Cambiar por tu dominio
       button: {
         title: "📋 Start TaskList",
         action: {
           type: "launch_miniapp",
           name: "TaskList",
-          url: "https://your-domain.com", // Cambiar por tu dominio
-          splashImageUrl: "https://your-domain.com/logo.png", // Cambiar por tu dominio
-          splashBackgroundColor: "#3B82F6"
+          url: "https://farcaster-branderplus-mini-app.vercel.app/", // Cambiar por tu dominio
+          splashImageUrl: "https://github.com/Daevitt/FarcasterMiniApp/blob/37a795a6f2d6392279883ad0147fe71b7a0e96d8/logos/200x200.png", // Cambiar por tu dominio
+          splashBackgroundColor: "#089bff"
         }
       }
     })
@@ -42,3 +42,4 @@ export default function RootLayout({
   )
 
 }
+
