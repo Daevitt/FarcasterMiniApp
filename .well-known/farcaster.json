@@ -1,0 +1,28 @@
+{
+  "frame": {
+    "name": "Brander+",
+    "version": "1",
+    "iconUrl": "https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/200x200.png",
+    "homeUrl": "https://farcaster-branderplus-mini-app.vercel.app",
+    "imageUrl": "https://www.brander.gg/_app/immutable/assets/promo-popups.a7bd6be9.avif",
+    "buttonTitle": "Get things done",
+    "splashImageUrl": "https://farcaster-branderplus-mini-app.vercel.app/splash.png",
+    "splashBackgroundColor": "#089bff",
+    "webhookUrl": "https://farcaster-branderplus-mini-app.vercel.app/api/webhook",
+    "subtitle": "Generate engagement with BranderGG",
+    "description": "We are the future of engagement on web3, taking advantage of the power in live streams.",
+    "primaryCategory": "social",
+    "screenshotUrls": [
+      "https://www.brander.gg/_app/immutable/assets/promo-popups.a7bd6be9.avif"
+    ],
+    "heroImageUrl": "https://www.brander.gg/_app/immutable/assets/millennials.c1784071.avif",
+    "tags": [
+      "social",
+      "tool",
+      "engagement",
+      "stream",
+      "web3"
+    ],
+    "tagline": "Real Engagement"
+  }
+}
