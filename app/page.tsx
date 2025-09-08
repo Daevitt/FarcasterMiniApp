@@ -125,7 +125,7 @@ export default function HomePage() {
                   </div>
                 ) : (
                   taskLists.map((list) => (
-                    <TaskListCard key={list.id} taskList={list} />
+                    <TaskListCard key={list.id} list={list} />
                   ))
                 )}
               </div>
@@ -142,6 +142,7 @@ export default function HomePage() {
   )
 
 }
+
 
 
 
