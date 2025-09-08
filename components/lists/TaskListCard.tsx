@@ -2,14 +2,10 @@
 
 import React from 'react';
 
+import { TaskList } from '../../lib/store';
+
 interface TaskListCardProps {
-  list: {
-    id: string;
-    title: string;
-    description: string;
-    taskCount: number;
-    createdAt?: Date;
-  };
+  list: TaskList;
   onClick?: () => void;
   onDelete?: () => void;
 }
@@ -44,3 +40,4 @@ export default function TaskListCard({ list, onClick, onDelete }: TaskListCardPr
     </div>
   );
 }
+
