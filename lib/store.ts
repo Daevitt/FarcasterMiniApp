@@ -54,3 +54,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   removeTaskList: (id) => 
     set({ taskLists: get().taskLists.filter(list => list.id !== id) }),
 }));
+
+// Alias para compatibilidad
+export const useAppStore = useAuthStore;
