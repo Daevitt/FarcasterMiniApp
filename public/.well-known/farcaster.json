@@ -10,9 +10,10 @@
     "description": "We are the future of engagement on web3, taking advantage of the power in live streams.",
     "primaryCategory": "social"
   },
+{
   "accountAssociation": {
-    "header": "",
-    "payload": "",
-    "signature": ""
+    "header": "eyJmaWQiOjEzMTMyOTcsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgxRjVjOTIxNUNCYmRmNjAwQzUwOGIxRkEzYjYwNTE4OEFGQzQyMmFGIn0",
+    "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItYnJhbmRlcnBsdXMtbWluaS1hcHAudmVyY2VsLmFwcCJ9",
+    "signature": "MHg0NzU2OThjZDQyNGQ2MTcyOTcyNWNjMDlmMDA5OGU1ZTI1NjRjYmRmZjcxMzlkYTAyYzZmMTJmZGU2NTg2NzA5NWQ2MzA2NjA2NDBkZTA1NGZkMzRkYTJmNjA5ZGQwY2ZkM2YzZThjZGQ5MTUxZmRkZTMwZDdlYjFiOGJjMjk4NDFi"
   }
 }
