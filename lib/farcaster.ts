@@ -19,19 +19,19 @@ export interface SignInResult {
 // Función helper para hacer sign in
 export async function signInWithFarcaster(): Promise<SignInResult> {
   try {
-    // Obtener contexto del usuario si ya está autenticado
-    if (sdk.context?.user) {
-      return {
-        isAuthenticated: true,
-        user: {
-          fid: sdk.context.user.fid,
-          username: sdk.context.user.username,
-          displayName: sdk.context.user.displayName,
-          pfpUrl: sdk.context.user.pfpUrl
-        }
-      }
-    }
+    const context = await sdk.context();
 
+if (context?.user) {
+  return {
+    isAuthenticated: true,
+    user: {
+      fid: context.user.fid,
+      username: context.user.username,
+      displayName: context.user.displayName,
+      pfpUrl: context.user.pfpUrl,
+    },
+  };
+}
     // Si no está autenticado, solicitar sign in
     const result = await sdk.actions.signIn()
 
@@ -68,3 +68,4 @@ export async function markAppAsReady() {
     console.error('Error marking app as ready:', error)
   }
 }
+
