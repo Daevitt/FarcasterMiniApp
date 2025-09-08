@@ -1,85 +1,56 @@
+'use client'
+
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface User {
-  fid: number
-  username?: string
-  displayName?: string
-  pfpUrl?: string
-  subscriptionStatus: 'free' | 'premium'
-  globalPoints: number
+  fid: number;
+  username: string;
+  displayName: string;
+  pfpUrl: string;
 }
 
 interface TaskList {
-  id: string
-  title: string
-  description: string
-  category: string
-  creatorFid: number
-  endDate: Date
-  totalTasks: number
-  participants: number
-  maxRewards: number
+  id: string;
+  title: string;
+  description: string;
+  taskCount: number;
+  createdAt: Date;
 }
 
 interface AuthState {
-  user: User | null
-  isAuthenticated: boolean
-  setUser: (user: User | null) => void
-  setAuthenticated: (authenticated: boolean) => void
-  logout: () => void
+  user: User | null;
+  isLoading: boolean;
+  login: (userData: User) => void;
+  logout: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
-interface AppState {
-  taskLists: TaskList[]
-  currentList: TaskList | null
-  addTaskList: (list: TaskList) => void
-  setCurrentList: (list: TaskList | null) => void
-  updateTaskList: (id: string, updates: Partial<TaskList>) => void
+interface TaskState {
+  taskLists: TaskList[];
+  addTaskList: (list: Omit<TaskList, 'id' | 'createdAt'>) => void;
+  removeTaskList: (id: string) => void;
 }
 
-// Store de autenticación
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isAuthenticated: false,
-      setUser: (user) => set({ user }),
-      setAuthenticated: (authenticated) => set({ isAuthenticated: authenticated }),
-      logout: () => set({ user: null, isAuthenticated: false })
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({ 
-        user: state.user, 
-        isAuthenticated: state.isAuthenticated 
-      })
-    }
-  )
-)
+// Auth Store
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  isLoading: false,
+  login: (userData: User) => set({ user: userData }),
+  logout: () => set({ user: null }),
+  setLoading: (loading: boolean) => set({ isLoading: loading }),
+}));
 
-// Store de la aplicación
-export const useAppStore = create<AppState>((set, get) => ({
+// Task Store
+export const useTaskStore = create<TaskState>((set, get) => ({
   taskLists: [],
-  currentList: null,
-  addTaskList: (list) => set((state) => ({ 
-    taskLists: [...state.taskLists, list] 
-  })),
-  setCurrentList: (list) => set({ currentList: list }),
-  updateTaskList: (id, updates) => set((state) => ({
-    taskLists: state.taskLists.map(list => 
-      list.id === id ? { ...list, ...updates } : list
-    )
-  }))
-}))
-
-// Hook combinado para fácil acceso
-export const useStore = () => {
-  const auth = useAuthStore()
-  const app = useAppStore()
-  
-  return {
-    ...auth,
-    ...app
-  }
-}
+  addTaskList: (list) => {
+    const newList: TaskList = {
+      ...list,
+      id: Date.now().toString(),
+      createdAt: new Date()
+    };
+    set({ taskLists: [...get().taskLists, newList] });
+  },
+  removeTaskList: (id) => 
+    set({ taskLists: get().taskLists.filter(list => list.id !== id) }),
+}));
