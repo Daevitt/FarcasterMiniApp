@@ -1,5 +1,4 @@
 'use client'
-
 import { create } from 'zustand'
 
 interface User {
@@ -20,6 +19,7 @@ interface TaskList {
 interface AuthState {
   user: User | null;
   isLoading: boolean;
+  isAuthenticated: boolean; // ← Añadir esta línea
   login: (userData: User) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
@@ -35,8 +35,9 @@ interface TaskState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: false,
-  login: (userData: User) => set({ user: userData }),
-  logout: () => set({ user: null }),
+  isAuthenticated: false, // ← Añadir esta línea
+  login: (userData: User) => set({ user: userData, isAuthenticated: true }), // ← Actualizar
+  logout: () => set({ user: null, isAuthenticated: false }), // ← Actualizar
   setLoading: (loading: boolean) => set({ isLoading: loading }),
 }));
 
