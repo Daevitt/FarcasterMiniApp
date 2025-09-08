@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore } from '../lib/store';
 
 export default function LoginButton() {
   const { login, setLoading, isLoading } = useAuthStore();
@@ -41,3 +41,4 @@ export default function LoginButton() {
     </button>
   );
 }
+
