@@ -37,7 +37,7 @@ export async function signInWithFarcaster(): Promise<SignInResult> {
 
     // 2. Forzar signIn
     const nonce = crypto.randomUUID()
-    const result = await sdk.actions.signIn({ nonce }) as SignInResponse
+    const result = await sdk.actions.signIn({ nonce }) as unknown as SignInResponse
 
     if (result?.fid) {
       return {
