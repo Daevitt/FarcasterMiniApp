@@ -33,7 +33,7 @@ if (context?.user) {
   };
 }
     // Si no está autenticado, solicitar sign in
-    const result = await sdk.actions.signIn()
+    const result = await sdk.actions.signIn({})
 
     if (result && result.fid) {
       return {
@@ -68,5 +68,6 @@ export async function markAppAsReady() {
     console.error('Error marking app as ready:', error)
   }
 }
+
 
 
