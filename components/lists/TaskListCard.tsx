@@ -1,4 +1,3 @@
-
 'use client'
 
 interface TaskList {
@@ -22,7 +21,6 @@ export function TaskListCard({ taskList }: TaskListCardProps) {
   const timeLeft = Math.ceil((taskList.endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
 
   const handleClick = () => {
-    // TODO: Navegar a la página de detalles de la lista
     console.log('Opening task list:', taskList.id)
   }
 
@@ -80,7 +78,6 @@ export function TaskListCard({ taskList }: TaskListCardProps) {
   )
 }
 
-// Helper function para obtener emoji por categoría
 function getCategoryEmoji(category: string): string {
   const emojis: Record<string, string> = {
     'social': '👥',
