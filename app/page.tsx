@@ -5,7 +5,7 @@ import  LoginButton  from '../components/auth/LoginButton'
 import  UserProfile  from '../components/auth/UserProfile'
 import  TaskListCard  from '../components/lists/TaskListCard'
 import  CreateListButton  from '../components/lists/CreateListButton'
-import { useAuthStore, useAppStore } from '../lib/store'
+import { useAuthStore, useTaskStore } from '../lib/store'
 import { markAppAsReady } from '../lib/farcaster'
 
 export default function HomePage() {
@@ -142,5 +142,6 @@ export default function HomePage() {
   )
 
 }
+
 
 
