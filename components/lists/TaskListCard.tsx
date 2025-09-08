@@ -44,3 +44,7 @@ export default function TaskListCard({ list, onClick, onDelete }: TaskListCardPr
     </div>
   );
 }
+
+export default function TaskListCard({ list, onClick, onDelete }: TaskListCardProps) {
+  // ... contenido del componente
+}
