@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { useTaskStore } from '../lib/store';
+import { useTaskStore } from '../../lib/store';
 
 export default function CreateListButton() {
   const { addTaskList } = useTaskStore();
@@ -71,4 +71,5 @@ export default function CreateListButton() {
     </button>
   );
 }
+
 
