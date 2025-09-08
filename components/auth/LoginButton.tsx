@@ -42,4 +42,6 @@ export default function LoginButton() {
   );
 }
 
-
+export default function LoginButton() {
+  // ... contenido del componente
+}
