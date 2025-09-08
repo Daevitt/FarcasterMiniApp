@@ -71,7 +71,3 @@ export default function CreateListButton() {
     </button>
   );
 }
-
-export default function CreateListButton() {
-  // ... contenido del componente
-}
