@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { TaskList } from '../../lib/types'
+import type { TaskList } from '@/lib/types'
 
 interface TaskListCardProps {
   list: TaskList
@@ -12,10 +12,7 @@ interface TaskListCardProps {
 export default function TaskListCard({ list, onClick, onDelete }: TaskListCardProps) {
   return (
     <div className="p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
-      <div
-        onClick={onClick}
-        className="cursor-pointer"
-      >
+      <div onClick={onClick} className="cursor-pointer">
         <h3 className="font-semibold text-lg mb-1">{list.title}</h3>
         {list.description && (
           <p className="text-gray-600 text-sm mb-2">{list.description}</p>
