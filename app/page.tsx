@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { LoginButton } from '../components/auth/LoginButton'
-import { UserProfile } from '../components/auth/UserProfile'
-import { TaskListCard } from '../components/lists/TaskListCard'
-import { CreateListButton } from '../components/lists/CreateListButton'
+import  LoginButton  from '../components/auth/LoginButton'
+import  UserProfile  from '../components/auth/UserProfile'
+import  TaskListCard  from '../components/lists/TaskListCard'
+import  CreateListButton  from '../components/lists/CreateListButton'
 import { useAuthStore, useAppStore } from '../lib/store'
 import { markAppAsReady } from '../lib/farcaster'
 
@@ -142,3 +142,4 @@ export default function HomePage() {
   )
 
 }
+
