@@ -1,19 +1,18 @@
 'use client'
 
-import React from 'react';
-
-import { TaskList } from '../../lib/store';
+import React from 'react'
+import { TaskList } from '../../lib/types'
 
 interface TaskListCardProps {
-  list: TaskList;
-  onClick?: () => void;
-  onDelete?: () => void;
+  list: TaskList
+  onClick?: () => void
+  onDelete?: () => void
 }
 
 export default function TaskListCard({ list, onClick, onDelete }: TaskListCardProps) {
   return (
     <div className="p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
-      <div 
+      <div
         onClick={onClick}
         className="cursor-pointer"
       >
@@ -25,12 +24,12 @@ export default function TaskListCard({ list, onClick, onDelete }: TaskListCardPr
           {list.taskCount} task{list.taskCount !== 1 ? 's' : ''}
         </p>
       </div>
-      
+
       {onDelete && (
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            onDelete();
+            e.stopPropagation()
+            onDelete()
           }}
           className="mt-2 text-red-500 hover:text-red-700 text-sm transition-colors"
         >
@@ -38,6 +37,5 @@ export default function TaskListCard({ list, onClick, onDelete }: TaskListCardPr
         </button>
       )}
     </div>
-  );
+  )
 }
-
