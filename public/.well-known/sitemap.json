@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "endpoints": [
+    {
+      "name": "Home",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app/",
+      "description": "Página principal de Brander+",
+      "category": "general"
+    },
+    {
+      "name": "Dashboard",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app/dashboard",
+      "description": "Panel con tus listas y estadísticas",
+      "category": "productivity"
+    },
+    {
+      "name": "Create List",
+      "url": "https://farcaster-branderplus-mini-app.vercel.app/create",
+      "description": "Crea una nueva lista de tareas",
+      "category": "productivity"
+    }
+  ]
+}
