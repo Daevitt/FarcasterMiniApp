@@ -72,4 +72,6 @@ export default function CreateListButton() {
   );
 }
 
-
+export default function CreateListButton() {
+  // ... contenido del componente
+}
