@@ -46,7 +46,6 @@ export function UserProfile() {
             <hr className="my-2" />
             <button
               onClick={() => {
-                // TODO: Implementar upgrade a premium
                 alert('Función próximamente disponible')
                 setShowMenu(false)
               }}
