@@ -1,55 +1,43 @@
 'use client'
 
-import { useState } from 'react'
-import { signInWithFarcaster } from '@/lib/farcaster'
-import { useAuthStore } from '@/lib/store'
+import React from 'react';
+import { useAuthStore } from '@/lib/store';
 
-export function LoginButton() {
-  const [isLoading, setIsLoading] = useState(false)
-  const { setUser, setAuthenticated } = useAuthStore()
+export default function LoginButton() {
+  const { login, setLoading, isLoading } = useAuthStore();
 
   const handleLogin = async () => {
-    setIsLoading(true)
+    setLoading(true);
     
     try {
-      const result = await signInWithFarcaster()
+      // Aquí iría tu lógica de autenticación con Farcaster
+      // Por ahora, simulamos un login exitoso
+      const mockUser = {
+        fid: 12345,
+        username: 'testuser',
+        displayName: 'Test User',
+        pfpUrl: 'https://i.imgur.com/placeholder.jpg'
+      };
       
-      if (result.isAuthenticated && result.user) {
-        setUser({
-          ...result.user,
-          subscriptionStatus: 'free',
-          globalPoints: 0
-        })
-        setAuthenticated(true)
-      } else {
-        console.error('Login failed:', result.error)
-        alert('Error al iniciar sesión: ' + result.error)
-      }
+      // Simular delay de API
+      setTimeout(() => {
+        login(mockUser);
+        setLoading(false);
+      }, 1000);
+      
     } catch (error) {
-      console.error('Login error:', error)
-      alert('Error inesperado al iniciar sesión')
-    } finally {
-      setIsLoading(false)
+      console.error('Login failed:', error);
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <button
+    <button 
       onClick={handleLogin}
       disabled={isLoading}
-      className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded transition-colors"
     >
-      {isLoading ? (
-        <>
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-          Conectando...
-        </>
-      ) : (
-        <>
-          <span>🎯</span>
-          Conectar con Farcaster
-        </>
-      )}
+      {isLoading ? 'Connecting...' : 'Connect with Farcaster'}
     </button>
-  )
+  );
 }
