@@ -19,7 +19,7 @@ export interface SignInResult {
 // Función helper para hacer sign in
 export async function signInWithFarcaster(): Promise<SignInResult> {
   try {
-    const context = await sdk.context();
+    const context = await sdk.context;
 
 if (context?.user) {
   return {
@@ -68,4 +68,5 @@ export async function markAppAsReady() {
     console.error('Error marking app as ready:', error)
   }
 }
+
 
