@@ -13,7 +13,7 @@ export function CreateListButton() {
     title: '',
     description: '',
     category: 'social',
-    duration: 7, // días
+    duration: 7,
     maxRewards: 3
   })
 
@@ -34,7 +34,6 @@ export function CreateListButton() {
     setIsLoading(true)
 
     try {
-      // Simular creación de lista (en el futuro será API call)
       const newList = {
         id: Date.now().toString(),
         title: formData.title,
@@ -49,7 +48,6 @@ export function CreateListButton() {
 
       addTaskList(newList)
       
-      // Reset form
       setFormData({
         title: '',
         description: '',
@@ -66,26 +64,6 @@ export function CreateListButton() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Verificar límites para usuarios gratuitos
-  const canCreateList = () => {
-    if (user?.subscriptionStatus === 'premium') return true
-    
-    // TODO: Implementar lógica de límites reales
-    // Por ahora permitir crear hasta 2 listas para usuarios gratuitos
-    return true
-  }
-
-  if (!canCreateList()) {
-    return (
-      <button
-        onClick={() => alert('Actualiza a Premium para crear más listas')}
-        className="btn-secondary text-sm"
-      >
-        ⬆️ Upgrade para crear más
-      </button>
-    )
   }
 
   return (
@@ -158,12 +136,8 @@ export function CreateListButton() {
                     <option value={1}>1 día</option>
                     <option value={3}>3 días</option>
                     <option value={7}>7 días</option>
-                    {user?.subscriptionStatus === 'premium' && (
-                      <>
-                        <option value={14}>14 días</option>
-                        <option value={30}>30 días</option>
-                      </>
-                    )}
+                    <option value={14}>14 días</option>
+                    <option value={30}>30 días</option>
                   </select>
                 </div>
 
@@ -178,24 +152,11 @@ export function CreateListButton() {
                   >
                     <option value={1}>Top 1</option>
                     <option value={3}>Top 3</option>
-                    {user?.subscriptionStatus === 'premium' && (
-                      <>
-                        <option value={5}>Top 5</option>
-                        <option value={10}>Top 10</option>
-                      </>
-                    )}
+                    <option value={5}>Top 5</option>
+                    <option value={10}>Top 10</option>
                   </select>
                 </div>
               </div>
-
-              {user?.subscriptionStatus === 'free' && (
-                <div className="bg-blue-50 p-3 rounded-lg text-sm">
-                  <p className="text-blue-800">
-                    <strong>Plan Gratuito:</strong> Máximo 4 días de duración y 3 NFT rewards.
-                    <button className="underline ml-1">Upgrade a Premium</button>
-                  </p>
-                </div>
-              )}
 
               <div className="flex gap-3 pt-4">
                 <button
