@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(
-  req: Request,
-  context: { params: Record<string, string> }
-) {
+// Marcar una tarea como completada
+export async function POST(req: Request, context: any) {
   const { id } = context.params;
 
   try {
@@ -12,8 +10,8 @@ export async function POST(
     const { userId } = body;
 
     const { rows } = await sql`
-      INSERT INTO task_completions (task_id, user_id, approved)
-      VALUES (${id}, ${userId}, false)
+      INSERT INTO task_completions (task_id, user_id, completed_at)
+      VALUES (${id}, ${userId}, NOW())
       RETURNING *;
     `;
 
