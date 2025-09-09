@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-// Obtener tareas de una lista específica
+// Obtener tareas de una lista
 export async function GET(req: Request, context: any) {
   const { id } = context.params;
 
@@ -16,7 +16,7 @@ export async function GET(req: Request, context: any) {
   }
 }
 
-// Crear una tarea dentro de la lista
+// Crear tarea dentro de una lista
 export async function POST(req: Request, context: any) {
   const { id } = context.params;
 
