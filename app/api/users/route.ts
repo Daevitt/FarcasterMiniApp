@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { fid, username, displayName, pfpUrl } = await req.json();
 
   try {
