@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: any) {
   try {
-    // Aquí recoges el id de la URL dinámica
-    const { id } = context.params;
+    // Next.js provee los params en context.params
+    const { id } = context.params as { id: string };
 
-    // Aquí recoges el body de la request
+    // Body de la request
     const body = await req.json();
 
-    // 🔹 TODO: lógica real de verificación con Neynar API
-    // por ahora devolvemos respuesta de prueba
+    // TODO: lógica real de verificación con Neynar API
     return NextResponse.json({
       ok: true,
       taskId: id,
