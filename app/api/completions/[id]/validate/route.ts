@@ -3,9 +3,9 @@ import { sql } from "@vercel/postgres";
 
 export async function POST(
   req: Request,
-  context: { params: Record<string, string> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     const body = await req.json();
