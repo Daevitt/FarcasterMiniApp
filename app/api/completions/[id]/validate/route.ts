@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+export async function POST(req: Request, context: any) {
+  const { id } = context.params; // accedemos sin problema
 
   try {
     const body = await req.json();
