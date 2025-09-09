@@ -1,18 +1,15 @@
-// app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth"
-import type { NextAuthConfig } from "next-auth"
-import OIDCProvider from "@auth/oidc-provider"
+import OIDCProvider from "next-auth/providers/oidc"
 
-// Configuración
-const authConfig: NextAuthConfig = {
+export const { handlers: { GET, POST } } = NextAuth({
   providers: [
     OIDCProvider({
       id: "farcaster",
       name: "Farcaster",
       clientId: process.env.NEYNAR_CLIENT_ID!,
       clientSecret: process.env.NEYNAR_CLIENT_SECRET!,
-      wellKnown: "https://identity.farcaster.xyz/.well-known/openid-configuration",
-      authorization: { params: { scope: "openid profile email" } },
+      wellKnown: "https://app.neynar.com/.well-known/openid-configuration",
+      authorization: { params: { scope: "openid offline_access" } },
       idToken: true,
       profile(profile) {
         return {
@@ -24,16 +21,5 @@ const authConfig: NextAuthConfig = {
       },
     }),
   ],
-  callbacks: {
-    async session({ session, token }) {
-      if (token.sub) {
-        (session as any).fid = token.sub
-      }
-      return session
-    },
-  },
-  secret: process.env.NEXTAUTH_SECRET!,
-}
-
-// Exportar los handlers GET y POST
-export const { handlers: { GET, POST } } = NextAuth(authConfig)
+  secret: process.env.NEXTAUTH_SECRET,
+})
