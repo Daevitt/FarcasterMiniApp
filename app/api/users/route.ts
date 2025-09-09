@@ -1,31 +1,33 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(req: Request, context: { params: { id: string } }) {
+// Obtener todos los usuarios
+export async function GET() {
   try {
-    const body = await req.json();
-    const { fid, username, displayName, pfpUrl } = body;
-
-    await sql`
-      INSERT INTO users (fid, username, display_name, pfp_url)
-      VALUES (${fid}, ${username}, ${displayName}, ${pfpUrl})
-      ON CONFLICT (fid) DO UPDATE SET
-        username = EXCLUDED.username,
-        display_name = EXCLUDED.display_name,
-        pfp_url = EXCLUDED.pfp_url;
-    `;
-
-    return NextResponse.json({ success: true });
+    const { rows } = await sql`SELECT * FROM users;`;
+    return NextResponse.json({ users: rows });
   } catch (err) {
-    return NextResponse.json({ success: false, error: "Error saving user" }, { status: 500 });
+    console.error("Error fetching users:", err);
+    return NextResponse.json({ error: "Error fetching users" }, { status: 500 });
   }
 }
 
-export async function GET() {
+// Crear un usuario
+export async function POST(req: Request) {
   try {
-    const { rows } = await sql`SELECT * FROM users`;
-    return NextResponse.json({ success: true, users: rows });
+    const body = await req.json();
+    const { farcasterId, username, displayName } = body;
+
+    const { rows } = await sql`
+      INSERT INTO users (farcaster_id, username, display_name, created_at)
+      VALUES (${farcasterId}, ${username}, ${displayName}, NOW())
+      ON CONFLICT (farcaster_id) DO UPDATE SET username = ${username}, display_name = ${displayName}
+      RETURNING *;
+    `;
+
+    return NextResponse.json({ success: true, user: rows[0] });
   } catch (err) {
-    return NextResponse.json({ success: false, error: "Error fetching users" }, { status: 500 });
+    console.error("Error creating user:", err);
+    return NextResponse.json({ error: "Error creating user" }, { status: 500 });
   }
 }
