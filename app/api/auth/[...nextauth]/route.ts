@@ -1,25 +1,20 @@
 import NextAuth from "next-auth"
-import OIDCProvider from "next-auth/providers/oidc"
+import type { AuthOptions } from "next-auth"
 
-export const { handlers: { GET, POST } } = NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
-    OIDCProvider({
-      id: "farcaster",
-      name: "Farcaster",
+    {
+      id: "neynar",
+      name: "Neynar",
+      type: "oidc", // aquí indicamos que es OpenID Connect
+      wellKnown: "https://api.neynar.com/.well-known/openid-configuration",
       clientId: process.env.NEYNAR_CLIENT_ID!,
       clientSecret: process.env.NEYNAR_CLIENT_SECRET!,
-      wellKnown: "https://app.neynar.com/.well-known/openid-configuration",
-      authorization: { params: { scope: "openid offline_access" } },
-      idToken: true,
-      profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          image: profile.picture,
-          fid: profile.fid,
-        }
-      },
-    }),
+    },
   ],
   secret: process.env.NEXTAUTH_SECRET,
-})
+}
+
+const handler = NextAuth(authOptions)
+
+export { handler as GET, handler as POST }
