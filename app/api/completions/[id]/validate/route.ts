@@ -1,22 +1,38 @@
+// app/api/completions/[id]/validate/route.ts
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(req: Request, context: { params: { id: string } }) { 
-  const { id } = context.params as { id: string };
+export async function POST(
+  req: Request,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
 
   try {
     const body = await req.json();
-    const { userFid, pointsAwarded } = body;
+    const { approved } = body;
 
-    await sql`
-      INSERT INTO completions (list_id, user_fid, points_awarded)
-      VALUES (${id}, ${userFid}, ${pointsAwarded})
-      ON CONFLICT (list_id, user_fid) DO UPDATE SET
-        points_awarded = EXCLUDED.points_awarded;
+    // Actualizar la validación de la completion
+    const { rows } = await sql`
+      UPDATE task_completions
+      SET approved = ${approved}, validated_at = NOW()
+      WHERE id = ${id}
+      RETURNING *;
     `;
 
-    return NextResponse.json({ success: true, listId: id, userFid });
+    if (rows.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "Completion not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, completion: rows[0] });
   } catch (err) {
-    return NextResponse.json({ success: false, error: "Error validating completion" }, { status: 500 });
+    console.error(err);
+    return NextResponse.json(
+      { success: false, error: "Error validating completion" },
+      { status: 500 }
+    );
   }
 }
