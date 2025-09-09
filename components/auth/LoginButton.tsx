@@ -14,8 +14,8 @@ export default function LoginButton() {
       // Por ahora, simulamos un login exitoso
       const mockUser = {
         fid: 12345,
-        username: 'testuser',
-        displayName: 'Test User',
+        username: 'testdaevitt',
+        displayName: 'Test Daevitt',
         pfpUrl: 'https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/perfil%20100%208bits%20brander.png'
       };
       
@@ -41,5 +41,6 @@ export default function LoginButton() {
     </button>
   );
 }
+
 
 
