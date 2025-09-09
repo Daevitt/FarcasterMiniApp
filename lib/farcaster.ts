@@ -1,67 +1,38 @@
-'use client'
+// lib/farcaster.ts
+import { sdk } from "@farcaster/miniapp-sdk";
 
-import { sdk } from "@farcaster/miniapp-sdk"
+export type SignInResult = {
+  message: string;
+  signature: string;
+  // cualquier otro campo que el sdk retorne
+};
 
-export interface SignInResult {
-  isAuthenticated: boolean
-  user?: {
-    fid: number
-    username: string
-    displayName: string
-    pfpUrl: string
-  }
-}
-
-type SignInResponse = {
-  fid: number
-  username: string
-  displayName: string
-  pfpUrl: string
-}
-
-export async function signInWithFarcaster(): Promise<SignInResult> {
+// Intenta obtener context.user si el frame ya lo provee.
+// Si no, solicita signIn al frame (Sign-in with Farcaster) y devuelve el objeto con message+signature
+export async function requestSignIn(): Promise<SignInResult | null> {
   try {
-    // 1. Revisar si ya hay contexto
-    const context = await sdk.context
+    // Si el Frame ya entrega contexto de usuario:
+    const context = (sdk as any)?.context;
     if (context?.user) {
+      // Frameworks/Frames pueden exponer el contexto; devolvemos un objeto reducido para el backend si es necesario.
       return {
-        isAuthenticated: true,
-        user: {
-          fid: context.user.fid,
-          username: context.user.username,
-          displayName: context.user.displayName,
-          pfpUrl: context.user.pfpUrl,
-        },
-      }
+        message: JSON.stringify({ fid: context.user.fid, username: context.user.username }),
+        signature: "", // no hay signature porque es contexto ya firmado por Frame
+      };
     }
 
-    // 2. Forzar signIn
-    const nonce = crypto.randomUUID()
-    const result = await sdk.actions.signIn({ nonce }) as unknown as SignInResponse
-
-    if (result?.fid) {
-      return {
-        isAuthenticated: true,
-        user: {
-          fid: result.fid,
-          username: result.username,
-          displayName: result.displayName,
-          pfpUrl: result.pfpUrl,
-        },
-      }
-    }
-
-    return { isAuthenticated: false }
-  } catch (error) {
-    console.error("Error signing in with Farcaster:", error)
-    return { isAuthenticated: false }
-  }
-}
-
-export async function markAppAsReady() {
-  try {
-    await sdk.actions.ready()
+    // Si no hay contexto, solicitamos sign-in via sdk.actions.signIn
+    // Generamos nonce (servidor validará la nonce más tarde)
+    const nonce = crypto?.randomUUID?.() ?? String(Date.now());
+    // Llamada al SDK para pedir credencial SIWF
+    const res = await (sdk as any).actions.signIn({ nonce });
+    // res normalmente contiene message + signature (depende de la versión del SDK)
+    return {
+      message: res.message || res.siwe || "",
+      signature: res.signature || res.sig || "",
+    };
   } catch (err) {
-    console.error("Error marking app as ready:", err)
+    console.error("requestSignIn error:", err);
+    return null;
   }
 }
