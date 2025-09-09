@@ -1,7 +1,7 @@
 // app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth"
 import type { NextAuthConfig } from "next-auth"
-import { OIDCProvider } from "next-auth/providers"
+import OIDCProvider from "next-auth/providers/oidc"
 
 // Configuración
 const authConfig: NextAuthConfig = {
