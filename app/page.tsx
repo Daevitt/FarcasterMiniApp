@@ -117,7 +117,7 @@ export default function HomePage() {
                 {taskLists.length === 0 ? (
                   <div className="glass p-8 rounded-xl text-center text-white">
                     <div className="text-4xl mb-4">📝</div>
-                    <h3 className="font-semibold mb-2">No hay listas disponibles</h3>
+                    <h3 className="font-semibold mb-2">No hay listas creadas</h3>
                     <p className="text-sm opacity-80 mb-4">
                       ¡Sé el primero en crear una lista de tareas!
                     </p>
@@ -142,6 +142,7 @@ export default function HomePage() {
   )
 
 }
+
 
 
 
