@@ -1,5 +1,6 @@
 // app/api/tasks/[id]/verify/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { sql } from '@vercel/postgres';
 
 const NEYNAR_BASE = process.env.NEYNAR_BASE_URL ?? 'https://api.neynar.com/v2/farcaster';
 const NEYNAR_KEY = process.env.NEYNAR_API_KEY;
@@ -30,12 +31,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'Missing actorFid / taskType / target' }, { status: 400 });
     }
 
-    // Fetch Task de DB
-    const task = await prisma.task.findUnique({ where: { id } });
-    if (!task) {
+    // Fetch Task de DB usando @vercel/postgres
+    const { rows: taskRows } = await sql`SELECT * FROM tasks WHERE id = ${id}`;
+    if (taskRows.length === 0) {
       return NextResponse.json({ ok: false, error: 'Task not found' }, { status: 404 });
     }
-
+    
+    const task = taskRows[0];
     let verified = false;
     let reason = '';
 
@@ -115,37 +117,38 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // --- si verified, actualizar DB ---
+    // --- si verified, actualizar DB usando @vercel/postgres ---
     if (verified) {
-      const list = await prisma.list.findUnique({ where: { id: task.listId } });
-      if (list) {
-        let participant = await prisma.participation.findFirst({
-          where: { user: { fid: body.actorFid }, listId: list.id },
-          include: { user: true }
-        });
-
-        let user = await prisma.user.findUnique({ where: { fid: body.actorFid } as any });
+      // Buscar lista asociada a la tarea
+      const { rows: listRows } = await sql`
+        SELECT * FROM lists WHERE id = ${task.list_id}
+      `;
+      
+      if (listRows.length > 0) {
+        const list = listRows[0];
+        
+        // Buscar o crear usuario
+        const { rows: userRows } = await sql`
+          SELECT * FROM users WHERE farcaster_id = ${body.actorFid}
+        `;
+        
+        let user = userRows[0];
         if (!user) {
-          user = await prisma.user.create({
-            data: { fid: body.actorFid, username: `fid-${body.actorFid}` }
-          });
+          const { rows: newUserRows } = await sql`
+            INSERT INTO users (farcaster_id, name, created_at)
+            VALUES (${body.actorFid}, ${`fid-${body.actorFid}`}, NOW())
+            RETURNING *;
+          `;
+          user = newUserRows[0];
         }
 
-        if (!participant) {
-          participant = await prisma.participation.create({
-            data: { userId: user.id, listId: list.id, score: task.points ?? 0 }
-          });
-        } else {
-          participant = await prisma.participation.update({
-            where: { id: participant.id },
-            data: { score: participant.score + (task.points ?? 0) }
-          });
-        }
+        // Crear completion record
+        await sql`
+          INSERT INTO completions (task_id, user_id, completed_at, validated)
+          VALUES (${task.id}, ${user.id}, NOW(), true);
+        `;
 
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { points: { increment: task.points ?? 0 } }
-        });
+        console.log(`✅ Task ${task.id} verified and completed for user ${user.id}`);
       }
     }
 
