@@ -3,9 +3,9 @@ import { sql } from "@vercel/postgres";
 
 export async function POST(
   req: Request,
-  context: { params: Record<string, string> } // <-- 🔑 cambio aquí
+  context: { params: Record<string, string> }
 ) {
-  const id = context.params.id;
+  const { id } = context.params;
 
   try {
     const body = await req.json();
@@ -27,7 +27,7 @@ export async function POST(
 
     return NextResponse.json({ success: true, completion: rows[0] });
   } catch (err) {
-    console.error(err);
+    console.error("Error validating completion:", err);
     return NextResponse.json(
       { success: false, error: "Error validating completion" },
       { status: 500 }
