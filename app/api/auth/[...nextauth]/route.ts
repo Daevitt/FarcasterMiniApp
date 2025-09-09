@@ -1,7 +1,6 @@
 import NextAuth from "next-auth"
-import type { AuthOptions } from "next-auth"
 
-const authOptions: AuthOptions = {
+export const { GET, POST } = NextAuth({
   providers: [
     {
       id: "neynar",
@@ -13,8 +12,4 @@ const authOptions: AuthOptions = {
     },
   ],
   secret: process.env.NEXTAUTH_SECRET,
-}
-
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }
+})
