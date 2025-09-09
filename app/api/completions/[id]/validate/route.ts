@@ -1,33 +1,23 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
+// Validar una completion de tarea
 export async function POST(req: Request, context: any) {
-  const { id } = context.params; // accedemos sin problema
+  const { id } = context.params;
 
   try {
     const body = await req.json();
-    const { approved } = body;
+    const { userId, validated } = body;
 
-    const { rows } = await sql`
-      UPDATE task_completions
-      SET approved = ${approved}, validated_at = NOW()
-      WHERE id = ${id}
-      RETURNING *;
+    await sql`
+      UPDATE completions
+      SET validated = ${validated}, validated_at = NOW()
+      WHERE id = ${id} AND user_id = ${userId};
     `;
 
-    if (rows.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "Completion not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ success: true, completion: rows[0] });
+    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Error validating completion:", err);
-    return NextResponse.json(
-      { success: false, error: "Error validating completion" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error validating completion" }, { status: 500 });
   }
 }
