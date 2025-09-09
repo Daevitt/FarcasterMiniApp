@@ -9,32 +9,37 @@ if (!NEYNAR_KEY) {
 }
 
 type VerifyBody = {
-  actorFid: number;     // quien afirma haber completado la acción (el visitante)
+  actorFid: number;
   taskType: 'follow' | 'recast' | 'reply' | 'keyword';
-  target: string;       // dependiendo tipo: target fid (follow), castHash (recast), keyword text (keyword)
+  target: string;
 };
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest) {
   try {
-    const { id } = context.params;
+    // Extraer el ID del pathname: /api/tasks/[id]/verify
+    const segments = req.nextUrl.pathname.split('/');
+    const id = segments.at(-2); // penúltimo segmento es el [id]
+
+    if (!id) {
+      return NextResponse.json({ ok: false, error: 'Missing task id in URL' }, { status: 400 });
+    }
+
     const body: VerifyBody = await req.json();
 
     if (!body || !body.actorFid || !body.taskType || !body.target) {
       return NextResponse.json({ ok: false, error: 'Missing actorFid / taskType / target' }, { status: 400 });
     }
 
-    // Fetch the Task from DB (optional validation)
+    // Fetch Task de DB
     const task = await prisma.task.findUnique({ where: { id } });
     if (!task) {
       return NextResponse.json({ ok: false, error: 'Task not found' }, { status: 404 });
     }
 
-    // Decide test by taskType
     let verified = false;
     let reason = '';
 
     if (!NEYNAR_KEY) {
-      // Modo "simulado" si no hay API key: devuelve falso con mensaje.
       reason = 'Neynar API key not configured - verification cannot run';
       return NextResponse.json({ ok: true, verified: false, reason });
     }
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       'Content-Type': 'application/json'
     };
 
-    // 1) follow: check if actorFid follows targetFid
+    // --- follow ---
     if (body.taskType === 'follow') {
       const targetFid = Number(body.target);
       if (Number.isNaN(targetFid)) {
@@ -62,10 +67,9 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       }
     }
 
-    // 2) recast: check whether actor has recast the target cast
+    // --- recast ---
     else if (body.taskType === 'recast') {
-      const castHash = body.target;
-      const url = `${NEYNAR_BASE}/reactions?fid=${body.actorFid}&cast_hash=${encodeURIComponent(castHash)}`;
+      const url = `${NEYNAR_BASE}/reactions?fid=${body.actorFid}&cast_hash=${encodeURIComponent(body.target)}`;
       const res = await fetch(url, { headers });
       if (!res.ok) {
         reason = `Neynar returned ${res.status}`;
@@ -77,7 +81,7 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       }
     }
 
-    // 3) keyword: check actor's recent casts for keyword
+    // --- keyword ---
     else if (body.taskType === 'keyword') {
       const keyword = body.target.toLowerCase();
       const url = `${NEYNAR_BASE}/feed?fid=${body.actorFid}&limit=50`;
@@ -95,9 +99,8 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       }
     }
 
-    // 4) reply: check reply to a specific cast (target = parent cast hash)
+    // --- reply ---
     else if (body.taskType === 'reply') {
-      const parentHash = body.target;
       const url = `${NEYNAR_BASE}/feed?fid=${body.actorFid}&limit=50`;
       const res = await fetch(url, { headers });
       if (!res.ok) {
@@ -106,13 +109,13 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
         const data = await res.json();
         const casts = data?.casts ?? data?.items ?? [];
         verified = Array.isArray(casts) && casts.some((c: any) => {
-          return (c?.parent_hash === parentHash) || (c?.parent?.hash === parentHash);
+          return (c?.parent_hash === body.target) || (c?.parent?.hash === body.target);
         });
         reason = verified ? 'reply found' : 'reply not found';
       }
     }
 
-    // If verified, update DB: mark participation / increase score
+    // --- si verified, actualizar DB ---
     if (verified) {
       const list = await prisma.list.findUnique({ where: { id: task.listId } });
       if (list) {
@@ -124,20 +127,13 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
         let user = await prisma.user.findUnique({ where: { fid: body.actorFid } as any });
         if (!user) {
           user = await prisma.user.create({
-            data: {
-              fid: body.actorFid,
-              username: `fid-${body.actorFid}`
-            }
+            data: { fid: body.actorFid, username: `fid-${body.actorFid}` }
           });
         }
 
         if (!participant) {
           participant = await prisma.participation.create({
-            data: {
-              userId: user.id,
-              listId: list.id,
-              score: task.points ?? 0
-            }
+            data: { userId: user.id, listId: list.id, score: task.points ?? 0 }
           });
         } else {
           participant = await prisma.participation.update({
@@ -150,23 +146,6 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
           where: { id: user.id },
           data: { points: { increment: task.points ?? 0 } }
         });
-
-        try {
-          const Pusher = require('pusher');
-          if (process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET) {
-            const p = new Pusher({
-              appId: process.env.PUSHER_APP_ID,
-              key: process.env.PUSHER_KEY,
-              secret: process.env.PUSHER_SECRET,
-              cluster: process.env.PUSHER_CLUSTER,
-              useTLS: true
-            });
-            p.trigger(`list-${list.id}`, 'ranking-updated', { listId: list.id });
-            p.trigger(`global-ranking`, 'global-ranking-updated', { userId: user.id });
-          }
-        } catch (err) {
-          console.warn('Pusher emit failed', err);
-        }
       }
     }
 
