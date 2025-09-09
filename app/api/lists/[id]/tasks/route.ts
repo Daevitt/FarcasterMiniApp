@@ -2,13 +2,12 @@ import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
 // Obtener tareas de una lista
-export async function GET(req: Request, context: any) {
-  const { id } = context.params;
-
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const { rows } = await sql`
-      SELECT * FROM tasks WHERE list_id = ${id};
-    `;
+    const { rows } = await sql`SELECT * FROM tasks WHERE list_id = ${params.id};`;
     return NextResponse.json({ tasks: rows });
   } catch (err) {
     console.error("Error fetching tasks:", err);
@@ -16,17 +15,18 @@ export async function GET(req: Request, context: any) {
   }
 }
 
-// Crear tarea dentro de una lista
-export async function POST(req: Request, context: any) {
-  const { id } = context.params;
-
+// Crear tarea en una lista
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const body = await req.json();
-    const { title, description, points } = body;
+    const { description, points } = body;
 
     const { rows } = await sql`
-      INSERT INTO tasks (list_id, title, description, points, created_at)
-      VALUES (${id}, ${title}, ${description}, ${points}, NOW())
+      INSERT INTO tasks (list_id, description, points, created_at)
+      VALUES (${params.id}, ${description}, ${points}, NOW())
       RETURNING *;
     `;
 
