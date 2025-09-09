@@ -14,13 +14,14 @@ interface TaskListCardProps {
       points: number
     }[]
   }
- const { data: session } = useSession()
-const currentUserFid = session?.user?.fid
   onClick?: () => void
   onDelete?: () => void
 }
 
-export default function TaskListCard({ list, currentUserFid, onClick, onDelete }: TaskListCardProps) {
+export default function TaskListCard({ list, onClick, onDelete }: TaskListCardProps) {
+  const { data: session } = useSession()
+  const currentUserFid = session?.user?.fid
+
   return (
     <div className="p-4 border rounded-lg hover:shadow-md transition-shadow bg-white">
       <div onClick={onClick} className="cursor-pointer">
@@ -77,4 +78,3 @@ export default function TaskListCard({ list, currentUserFid, onClick, onDelete }
     </div>
   )
 }
-
