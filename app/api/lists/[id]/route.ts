@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function GET(req: Request, context: any) {
+export async function GET(req: Request, context: { params: { id: string } }) {
   const { id } = context.params as { id: string };
   try {
     const { rows } = await sql`SELECT * FROM task_lists WHERE id = ${id}`;
