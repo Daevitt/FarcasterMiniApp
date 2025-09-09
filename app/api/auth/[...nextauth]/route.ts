@@ -1,5 +1,5 @@
 import NextAuth from "next-auth"
-import OIDC from "next-auth/providers/oidc"
+import OIDCProvider from "next-auth/providers/oidc"
 
 export const { handlers: { GET, POST } } = NextAuth({
   providers: [
