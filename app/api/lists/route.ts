@@ -12,15 +12,15 @@ export async function GET() {
   }
 }
 
-// Crear una nueva lista
+// Crear lista
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, description, userId } = body;
+    const { userId, title, description, duration } = body;
 
     const { rows } = await sql`
-      INSERT INTO lists (name, description, user_id, created_at)
-      VALUES (${name}, ${description}, ${userId}, NOW())
+      INSERT INTO lists (user_id, title, description, duration, created_at)
+      VALUES (${userId}, ${title}, ${description}, ${duration}, NOW())
       RETURNING *;
     `;
 
