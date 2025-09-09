@@ -1,6 +1,5 @@
 // app/api/tasks/[id]/verify/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // ajusta path si tu proyecto lo requiere
 
 const NEYNAR_BASE = process.env.NEYNAR_BASE_URL ?? 'https://api.neynar.com/v2/farcaster';
 const NEYNAR_KEY = process.env.NEYNAR_API_KEY;
