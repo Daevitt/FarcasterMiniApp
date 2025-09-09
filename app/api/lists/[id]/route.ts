@@ -5,7 +5,10 @@ interface Params {
   params: { id: string };
 }
 
-export async function GET(_: Request, { params }: Params) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
 
   try {
