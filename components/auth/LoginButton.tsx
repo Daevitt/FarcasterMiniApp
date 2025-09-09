@@ -1,46 +1,50 @@
 'use client'
-
-import React from 'react';
-import { useAuthStore } from '../../lib/store';
+import React from "react";
+import { useAuthStore } from "@/lib/store";
+import { requestSignIn } from "@/lib/farcaster";
 
 export default function LoginButton() {
-  const { login, setLoading, isLoading } = useAuthStore();
+  const login = useAuthStore((s) => s.login);
+  const setLoading = useAuthStore((s) => s.setLoading);
 
-  const handleLogin = async () => {
+  const handleSignIn = async () => {
     setLoading(true);
-    
     try {
-      // Aquí iría tu lógica de autenticación con Farcaster
-      // Por ahora, simulamos un login exitoso
-      const mockUser = {
-        fid: 12345,
-        username: 'testdaevitt',
-        displayName: 'Test Daevitt',
-        pfpUrl: 'https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/perfil%20100%208bits%20brander.png'
-      };
-      
-      // Simular delay de API
-      setTimeout(() => {
-        login(mockUser);
+      const sign = await requestSignIn();
+      if (!sign) {
+        alert("No se pudo iniciar sign-in.");
         setLoading(false);
-      }, 1000);
-      
-    } catch (error) {
-      console.error('Login failed:', error);
+        return;
+      }
+
+      // Enviar al servidor para verificar y crear sesión
+      const resp = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sign),
+      });
+
+      const json = await resp.json();
+      if (json?.ok && json.user) {
+        login(json.user);
+      } else {
+        console.error("Auth verify failed:", json);
+        alert("No se pudo verificar el login.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error iniciando sesión");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <button 
-      onClick={handleLogin}
-      disabled={isLoading}
-      className="bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded transition-colors"
+    <button
+      onClick={handleSignIn}
+      className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:opacity-90"
     >
-      {isLoading ? 'Connecting...' : 'Connect with Farcaster'}
+      Iniciar sesión con Farcaster
     </button>
   );
 }
-
-
-
