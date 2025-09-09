@@ -1,13 +1,11 @@
-import { NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import { NextResponse } from "next/server";
+import { sql } from "@vercel/postgres";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { fid, username, displayName, pfpUrl } = await req.json();
-
+export async function POST(req: Request) {
   try {
+    const body = await req.json();
+    const { fid, username, displayName, pfpUrl } = body;
+
     await sql`
       INSERT INTO users (fid, username, display_name, pfp_url)
       VALUES (${fid}, ${username}, ${displayName}, ${pfpUrl})
@@ -17,9 +15,17 @@ export async function POST(
         pfp_url = EXCLUDED.pfp_url;
     `;
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: 'DB error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Error saving user" }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const { rows } = await sql`SELECT * FROM users`;
+    return NextResponse.json({ success: true, users: rows });
+  } catch (err) {
+    return NextResponse.json({ success: false, error: "Error fetching users" }, { status: 500 });
   }
 }
