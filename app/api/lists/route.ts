@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { fid, title, description, tasks, maxWinners, nftDeliveryType, nftLink, nftLinks, endsAt } = await req.json();
 
   try {
