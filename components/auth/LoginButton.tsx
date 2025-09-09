@@ -16,7 +16,7 @@ export default function LoginButton() {
         fid: 12345,
         username: 'testuser',
         displayName: 'Test User',
-        pfpUrl: 'https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/200x200.png'
+        pfpUrl: 'https://raw.githubusercontent.com/Daevitt/FarcasterMiniApp/refs/heads/main/logos/perfil%20100%208bits%20brander.png'
       };
       
       // Simular delay de API
@@ -41,4 +41,5 @@ export default function LoginButton() {
     </button>
   );
 }
+
 
