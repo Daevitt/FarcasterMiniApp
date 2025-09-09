@@ -12,16 +12,15 @@ export async function GET() {
   }
 }
 
-// Crear un usuario
+// Crear usuario
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { farcasterId, username, displayName } = body;
+    const { farcasterId, name } = body;
 
     const { rows } = await sql`
-      INSERT INTO users (farcaster_id, username, display_name, created_at)
-      VALUES (${farcasterId}, ${username}, ${displayName}, NOW())
-      ON CONFLICT (farcaster_id) DO UPDATE SET username = ${username}, display_name = ${displayName}
+      INSERT INTO users (farcaster_id, name, created_at)
+      VALUES (${farcasterId}, ${name}, NOW())
       RETURNING *;
     `;
 
