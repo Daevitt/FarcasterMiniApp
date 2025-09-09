@@ -5,7 +5,10 @@ interface Params {
   params: { id: string };
 }
 
-export async function POST(req: Request, { params }: Params) {
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
   const { validatorFid, points } = await req.json();
 
