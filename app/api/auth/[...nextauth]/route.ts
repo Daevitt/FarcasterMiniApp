@@ -1,6 +1,6 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import NextAuth from "next-auth"
 
-const authConfig: NextAuthConfig = {
+const handler = NextAuth({
   providers: [
     {
       id: "neynar",
@@ -12,14 +12,7 @@ const authConfig: NextAuthConfig = {
     },
   ],
   secret: process.env.NEXTAUTH_SECRET,
-}
+})
 
-const handler = NextAuth(authConfig)
-
-export async function GET(req: Request, ctx: any) {
-  return handler(req, ctx)
-}
-
-export async function POST(req: Request, ctx: any) {
-  return handler(req, ctx)
-}
+export const GET = handler.GET
+export const POST = handler.POST
