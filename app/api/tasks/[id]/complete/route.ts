@@ -1,33 +1,23 @@
-import { NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import { NextResponse } from "next/server";
+import { sql } from "@vercel/postgres";
 
-interface Params {
-  params: { id: string };
-}
-
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-  const { userFid, attemptData } = await req.json();
+export async function POST(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params;
 
   try {
-    const taskRes = await sql`SELECT list_id, points FROM tasks WHERE id = ${id}`;
-    if (taskRes.rowCount === 0) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-    const listId = taskRes.rows[0].list_id;
+    const body = await req.json();
+    const { userFid, proof } = body;
 
-    await sql`
-      INSERT INTO task_completions (task_id, list_id, user_fid, attempt_data)
-      VALUES (${id}, ${listId}, ${userFid}, ${JSON.stringify(attemptData || {})})
-      ON CONFLICT (task_id, user_fid) DO NOTHING;
+    // Guardar la completion de la tarea
+    const { rows } = await sql`
+      INSERT INTO task_completions (task_id, user_fid, proof)
+      VALUES (${id}, ${userFid}, ${proof})
+      RETURNING *;
     `;
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true, completion: rows[0] });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: 'DB error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Error completing task" }, { status: 500 });
   }
 }
