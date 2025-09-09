@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-// Obtener tareas de una lista
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, context: { params: any }) {
   try {
-    const { rows } = await sql`SELECT * FROM tasks WHERE list_id = ${params.id};`;
+    const listId = context.params.id;
+
+    const { rows } = await sql`
+      SELECT * FROM tasks WHERE list_id = ${listId};
+    `;
+
     return NextResponse.json({ tasks: rows });
   } catch (err) {
     console.error("Error fetching tasks:", err);
@@ -15,22 +16,18 @@ export async function GET(
   }
 }
 
-// Crear tarea en una lista
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, context: { params: any }) {
   try {
+    const listId = context.params.id;
     const body = await req.json();
-    const { description, points } = body;
 
     const { rows } = await sql`
-      INSERT INTO tasks (list_id, description, points, created_at)
-      VALUES (${params.id}, ${description}, ${points}, NOW())
+      INSERT INTO tasks (list_id, title, points)
+      VALUES (${listId}, ${body.title}, ${body.points})
       RETURNING *;
     `;
 
-    return NextResponse.json({ success: true, task: rows[0] });
+    return NextResponse.json({ task: rows[0] });
   } catch (err) {
     console.error("Error creating task:", err);
     return NextResponse.json({ error: "Error creating task" }, { status: 500 });
