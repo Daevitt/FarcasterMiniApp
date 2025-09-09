@@ -1,31 +1,32 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-// GET una lista por id
-export async function GET(req: Request, context: any) {
-  const { id } = context.params;
-
+// Obtener todas las listas
+export async function GET() {
   try {
-    const { rows } = await sql`SELECT * FROM task_lists WHERE id = ${id}`;
-    if (rows.length === 0) {
-      return NextResponse.json({ error: "List not found" }, { status: 404 });
-    }
-    return NextResponse.json(rows[0]);
+    const { rows } = await sql`SELECT * FROM lists;`;
+    return NextResponse.json({ lists: rows });
   } catch (err) {
-    console.error("Error fetching list:", err);
-    return NextResponse.json({ error: "Error fetching list" }, { status: 500 });
+    console.error("Error fetching lists:", err);
+    return NextResponse.json({ error: "Error fetching lists" }, { status: 500 });
   }
 }
 
-// DELETE una lista
-export async function DELETE(req: Request, context: any) {
-  const { id } = context.params;
-
+// Crear una nueva lista
+export async function POST(req: Request) {
   try {
-    await sql`DELETE FROM task_lists WHERE id = ${id}`;
-    return NextResponse.json({ success: true });
+    const body = await req.json();
+    const { name, description, userId } = body;
+
+    const { rows } = await sql`
+      INSERT INTO lists (name, description, user_id, created_at)
+      VALUES (${name}, ${description}, ${userId}, NOW())
+      RETURNING *;
+    `;
+
+    return NextResponse.json({ success: true, list: rows[0] });
   } catch (err) {
-    console.error("Error deleting list:", err);
-    return NextResponse.json({ error: "Error deleting list" }, { status: 500 });
+    console.error("Error creating list:", err);
+    return NextResponse.json({ error: "Error creating list" }, { status: 500 });
   }
 }
