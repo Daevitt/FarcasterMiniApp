@@ -3,6 +3,7 @@
 import React from 'react'
 import type { TaskList } from '@/lib/types'
 import VerifyButton from '@/components/tasks/VerifyButton'
+import { useSession } from "next-auth/react"
 
 interface TaskListCardProps {
   list: TaskList & {
@@ -13,7 +14,8 @@ interface TaskListCardProps {
       points: number
     }[]
   }
-  currentUserFid?: number   // 🔹 el fid del usuario logueado
+ const { data: session } = useSession()
+const currentUserFid = session?.user?.fid
   onClick?: () => void
   onDelete?: () => void
 }
@@ -75,3 +77,4 @@ export default function TaskListCard({ list, currentUserFid, onClick, onDelete }
     </div>
   )
 }
+
