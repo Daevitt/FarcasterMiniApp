@@ -1,48 +1,60 @@
 'use client'
 import { create } from 'zustand'
-import type { User, TaskList } from '@/lib/types'
 
-// Estado de autenticación
+export interface User {
+  fid: number;
+  username: string;
+  displayName?: string;
+  pfpUrl?: string;
+}
+
+export interface TaskList {
+  id: string;
+  title: string;
+  description?: string;
+  taskCount: number;
+  createdAt: string; // ISO string for easier serialization
+  ownerFid?: number;
+  // campos adicionales: pricePerDayUSD, durationDays, nftLinks[], maxWinners, isPublic, subscriptionRequired, etc.
+}
+
 interface AuthState {
-  user: User | null
-  isLoading: boolean
-  isAuthenticated: boolean
-  login: (userData: User) => void
-  logout: () => void
-  setLoading: (loading: boolean) => void
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (userData: User) => void;
+  logout: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
-// Estado de listas de tareas
 interface TaskState {
-  taskLists: TaskList[]
-  addTaskList: (list: Omit<TaskList, 'id' | 'createdAt'>) => void
-  removeTaskList: (id: string) => void
+  taskLists: TaskList[];
+  addTaskList: (list: Omit<TaskList, 'id' | 'createdAt'>) => void;
+  removeTaskList: (id: string) => void;
+  updateTaskList: (id: string, patch: Partial<TaskList>) => void;
 }
 
-// Auth Store
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: false,
   isAuthenticated: false,
-  login: (userData: User) => set({ user: userData, isAuthenticated: true }),
+  login: (userData) => set({ user: userData, isAuthenticated: true }),
   logout: () => set({ user: null, isAuthenticated: false }),
-  setLoading: (loading: boolean) => set({ isLoading: loading }),
-}))
+  setLoading: (loading) => set({ isLoading: loading }),
+}));
 
-// Task Store
 export const useTaskStore = create<TaskState>((set, get) => ({
   taskLists: [],
   addTaskList: (list) => {
     const newList: TaskList = {
       ...list,
       id: Date.now().toString(),
-      createdAt: new Date(),
-    }
-    set({ taskLists: [...get().taskLists, newList] })
+      createdAt: new Date().toISOString()
+    };
+    set({ taskLists: [...get().taskLists, newList] });
   },
-  removeTaskList: (id) =>
-    set({ taskLists: get().taskLists.filter((list) => list.id !== id) }),
-}))
+  removeTaskList: (id) => set({ taskLists: get().taskLists.filter(l => l.id !== id) }),
+  updateTaskList: (id, patch) => set({ taskLists: get().taskLists.map(l => l.id === id ? { ...l, ...patch } : l) }),
+}));
 
-// Alias para compatibilidad
-export const useAppStore = useAuthStore
+export const useAppStore = useAuthStore;
