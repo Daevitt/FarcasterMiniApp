@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-export async function POST(req: Request) {
+export async function POST(req: Request, context: { params: { id: string } }) {
   try {
     const body = await req.json();
     const { creatorFid, title, description, durationDays, nftUrl, points } = body;
