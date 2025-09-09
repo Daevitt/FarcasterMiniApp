@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-// Validar una completion
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, context: { params: any }) {
   try {
+    const id = context.params.id;
+
     const { rows } = await sql`
       UPDATE completions
       SET validated = true
-      WHERE id = ${params.id}
+      WHERE id = ${id}
       RETURNING *;
     `;
 
